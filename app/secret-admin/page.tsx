@@ -12,12 +12,30 @@ import {
   DialogFooter,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { supabase } from '@/lib/supabase';
+import { supabase, supabaseEnvMissing } from '@/lib/supabase';
 
 export default function SecretAdmin() {
   const [user, setUser] = useState<any>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  if (supabaseEnvMissing) {
+    return (
+      <div className="min-h-screen bg-[#020617] text-white py-20">
+        <main className="mx-auto max-w-3xl rounded-[2rem] border border-rose-500/25 bg-slate-950/90 p-10 text-center shadow-2xl shadow-slate-950/30">
+          <h1 className="text-3xl font-semibold text-white">Admin Supabase belum tersedia</h1>
+          <p className="mt-4 text-slate-300">
+            Supabase tidak dapat terhubung karena env vars belum di-set di Vercel.
+          </p>
+          <p className="mt-3 text-left text-sm text-slate-200">
+            Pastikan Vercel punya:
+            <br />- <strong>NEXT_PUBLIC_SUPABASE_URL</strong>
+            <br />- <strong>NEXT_PUBLIC_SUPABASE_ANON_KEY</strong>
+          </p>
+        </main>
+      </div>
+    );
+  }
   const [loading, setLoading] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertTitle, setAlertTitle] = useState('');

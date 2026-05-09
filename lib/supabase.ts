@@ -3,8 +3,11 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabaseEnvReady = !!(supabaseUrl && supabaseAnonKey)
 
 export const supabase: SupabaseClient | null =
-  typeof window !== 'undefined' && supabaseUrl && supabaseAnonKey
+  typeof window !== 'undefined' && supabaseEnvReady
     ? createClient(supabaseUrl, supabaseAnonKey)
     : null
+
+export const supabaseEnvMissing = !supabaseEnvReady
