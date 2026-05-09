@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { supabase, supabaseEnvMissing } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import DriverCard from '@/components/DriverCard';
 
 type Driver = {
@@ -17,24 +17,7 @@ export default function Home() {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
-
-  if (supabaseEnvMissing) {
-    return (
-      <div className="min-h-screen bg-[#020617] text-white py-20">
-        <main className="mx-auto max-w-3xl rounded-[2rem] border border-rose-500/25 bg-slate-950/90 p-10 text-center shadow-2xl shadow-slate-950/30">
-          <h1 className="text-3xl font-semibold text-white">Koneksi Supabase belum tersedia</h1>
-          <p className="mt-4 text-slate-300">
-            Pastikan environment variables berikut sudah dikonfigurasikan di Vercel:
-          </p>
-          <p className="mt-3 text-left text-sm text-slate-200">
-            <strong>NEXT_PUBLIC_SUPABASE_URL</strong><br />
-            <strong>NEXT_PUBLIC_SUPABASE_ANON_KEY</strong>
-          </p>
-        </main>
-      </div>
-    );
-  }
-
+  
   useEffect(() => {
     fetchDrivers();
   }, []);
