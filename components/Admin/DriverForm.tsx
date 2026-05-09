@@ -27,6 +27,11 @@ export default function DriverForm({ driver, onClose, onSuccess }: {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!supabase) {
+      console.error('Supabase client belum tersedia. Periksa konfigurasi NEXT_PUBLIC_SUPABASE_URL dan NEXT_PUBLIC_SUPABASE_ANON_KEY.')
+      return
+    }
+
     setLoading(true);
 
     if (driver?.id) {

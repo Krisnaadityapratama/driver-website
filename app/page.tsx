@@ -23,6 +23,13 @@ export default function Home() {
   }, []);
 
   const fetchDrivers = async () => {
+    if (!supabase) {
+      console.warn('Supabase client unavailable. Check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.')
+      setDrivers([])
+      setLoading(false)
+      return
+    }
+
     const { data, error } = await supabase
       .from('drivers')
       .select('*')

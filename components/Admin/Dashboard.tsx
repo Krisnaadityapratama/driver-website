@@ -20,6 +20,12 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [showForm, setShowForm] = useState(false);
 
   const fetchDrivers = async () => {
+    if (!supabase) {
+      console.warn('Supabase client unavailable in admin dashboard.')
+      setDrivers([])
+      return
+    }
+
     const { data } = await supabase.from('drivers').select('*').order('created_at', { ascending: false });
     setDrivers(data || []);
   };
@@ -29,6 +35,11 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   }, []);
 
   const deleteDriver = async (id: string) => {
+    if (!supabase) {
+      console.warn('Supabase client unavailable in admin dashboard.')
+      return
+    }
+
     if (confirm('Yakin ingin menghapus driver ini?')) {
       await supabase.from('drivers').delete().eq('id', id);
       fetchDrivers();

@@ -26,6 +26,11 @@ export default function SecretAdmin() {
   const [pendingLoginSuccess, setPendingLoginSuccess] = useState(false);
 
   useEffect(() => {
+    if (!supabase) {
+      console.warn('Supabase client unavailable in admin page.')
+      return
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
@@ -45,6 +50,11 @@ export default function SecretAdmin() {
   };
 
   const handleLogin = async () => {
+    if (!supabase) {
+      openAlert('error', 'Login Gagal', 'Supabase client tidak tersedia.')
+      return
+    }
+
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -72,6 +82,7 @@ export default function SecretAdmin() {
   };
 
   const handleLogout = async () => {
+    if (!supabase) return
     await supabase.auth.signOut();
   };
 
