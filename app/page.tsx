@@ -71,9 +71,12 @@ export default function Home() {
               Buka Tutorial dan Blog
             </Link>
           </div>
-          <div className="rounded-[1.75rem] border border-slate-800 bg-slate-950/80 p-6 shadow-sm shadow-slate-950/10">
+          <div className="rounded-[1.75rem] border border-slate-800 bg-slate-950/80 p-6 shadow-sm shadow-slate-950/10 transition hover:border-sky-400/40 hover:bg-slate-900/90">
             <h3 className="text-xl font-semibold text-white">Temukan topik</h3>
             <p className="mt-3 text-slate-400">Contoh: cara install driver A, install iPOS part 1, atau tips download file.</p>
+            <Link href="/videos" className="mt-6 inline-flex items-center justify-center rounded-full bg-sky-400 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-300">
+              Tonton Video Tutorial
+            </Link>
           </div>
         </section>
 

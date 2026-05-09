@@ -53,7 +53,12 @@ export default function DriverForm({ driver, onClose, onSuccess }: {
             <p className="text-sm uppercase tracking-[0.28em] text-slate-500">Form Driver</p>
             <h2 className="text-2xl font-semibold text-white">{driver ? 'Edit Driver' : 'Tambah Driver Baru'}</h2>
           </div>
-          <Button type="button" variant="outline" onClick={onClose} className="rounded-3xl px-4 py-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            className="rounded-3xl px-4 py-2 bg-sky-600 text-white hover:bg-slate-700 border-transparent"
+          >
             Batal
           </Button>
         </div>
@@ -85,7 +90,12 @@ export default function DriverForm({ driver, onClose, onSuccess }: {
           </div>
 
           <div className="grid gap-3 pt-3 sm:grid-cols-2">
-            <Button type="button" variant="outline" onClick={onClose} className="w-full rounded-[1.5rem] px-4 py-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="w-full rounded-[1.5rem] px-4 py-3 bg-sky-600 text-white hover:bg-slate-700 border-transparent"
+            >
               Batal
             </Button>
             <Button type="submit" disabled={loading} className="w-full rounded-[1.5rem] px-4 py-3">

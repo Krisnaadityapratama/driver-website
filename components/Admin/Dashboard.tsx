@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import BlogDashboard from './BlogDashboard';
+import VideoDashboard from './VideoDashboard';
 import DriverForm from './DriverForm';
 import { Button } from '@/components/ui/button';
 import { Trash2, Edit, Plus } from 'lucide-react';
@@ -19,7 +20,7 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [editingDriver, setEditingDriver] = useState<Driver | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [section, setSection] = useState<'drivers' | 'blog'>('drivers');
+  const [section, setSection] = useState<'drivers' | 'blog' | 'video'>('drivers');
 
   const fetchDrivers = async () => {
     if (!supabase) {
@@ -56,12 +57,14 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             <div className="space-y-3">
               <p className="text-sm uppercase tracking-[0.3em] text-sky-300/70">Admin Dashboard</p>
               <h1 className="text-3xl font-semibold tracking-tight text-white">
-                {section === 'drivers' ? 'Pengelolaan Driver' : 'Kelola Tutorial & Blog'}
+                {section === 'drivers' ? 'Pengelolaan Driver' : section === 'blog' ? 'Kelola Tutorial & Blog' : 'Kelola Video Tutorial'}
               </h1>
               <p className="max-w-2xl text-slate-400">
                 {section === 'drivers'
                   ? 'Lihat, edit, dan tambahkan driver dengan cepat. Tampilan ini responsif untuk desktop dan mobile.'
-                  : 'Tambahkan tutorial dan panduan install agar pengguna dapat mencari cara install driver dengan mudah.'}
+                  : section === 'blog'
+                  ? 'Tambahkan tutorial dan panduan install agar pengguna dapat mencari cara install driver dengan mudah.'
+                  : 'Tambahkan video tutorial untuk panduan visual cara install driver dan tips lainnya.'}
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -78,6 +81,13 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 className="bg-sky-600 text-white hover:bg-slate-700 border-transparent"
               >
                 Kelola Blog
+              </Button>
+              <Button
+                variant={section === 'video' ? undefined : 'outline'}
+                onClick={() => setSection('video')}
+                className="bg-sky-600 text-white hover:bg-slate-700 border-transparent"
+              >
+                Kelola Video
               </Button>
               <Button
                 variant="outline"
@@ -97,10 +107,9 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 <p className="text-sm uppercase tracking-[0.25em] text-slate-500">Total driver</p>
                 <p className="mt-2 text-3xl font-semibold text-white">{drivers.length}</p>
               </div>
-              <div className="rounded-3xl border border-slate-800 bg-slate-950/80 px-5 py-4 text-slate-300 shadow-sm shadow-slate-950/10">
-                <p className="text-sm uppercase tracking-[0.25em] text-slate-500">Status</p>
-                <p className="mt-2 text-white">Data terbaru siap dikelola</p>
-              </div>
+              <Button onClick={() => { setEditingDriver(null); setShowForm(true); }} className="gap-2 bg-sky-600 text-white hover:bg-slate-700 border-transparent">
+                <Plus className="w-5 h-5" /> Tambah Driver
+              </Button>
             </div>
 
             <div className="mt-8 space-y-6">
@@ -154,7 +163,12 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       <p className="text-sm text-slate-300">{driver.size || 'Ukuran tidak tersedia'}</p>
                       <p className="text-sm text-slate-400 line-clamp-2">{driver.link_gdrive}</p>
                       <div className="flex flex-wrap items-center gap-3 pt-3">
-                        <Button size="sm" variant="outline" onClick={() => { setEditingDriver(driver); setShowForm(true); }}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => { setEditingDriver(driver); setShowForm(true); }}
+                          className="bg-sky-600 text-white hover:bg-slate-700 border-transparent"
+                        >
                           <Edit className="w-4 h-4" />
                         </Button>
                         <Button size="sm" variant="destructive" onClick={() => deleteDriver(driver.id)}>
@@ -175,8 +189,10 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               />
             )}
           </>
-        ) : (
+        ) : section === 'blog' ? (
           <BlogDashboard />
+        ) : (
+          <VideoDashboard />
         )}
       </div>
     </div>
