@@ -7,7 +7,7 @@
 -- Enable RLS on the tables used by the app.
 alter table if exists public.drivers enable row level security;
 alter table if exists public.tutorials enable row level security;
-
+alter table if exists public.videos enable row level security;
 -- Public read access for blog/tutorials.
 create policy if not exists "Public can select tutorials" on public.tutorials
   for select

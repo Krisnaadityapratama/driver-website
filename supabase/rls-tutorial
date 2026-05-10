@@ -1,0 +1,13 @@
+-- Aktifkan RLS
+alter table tutorials enable row level security;
+
+-- Policy untuk PUBLIC (hanya boleh baca)
+create policy "Blog publik bisa baca" 
+on tutorials for select 
+using (true);
+
+-- Policy untuk ADMIN (bisa baca, tambah, edit, hapus)
+create policy "Admin Blog bisa full akses" 
+on tutorials 
+for all 
+using (auth.role() = 'authenticated');
