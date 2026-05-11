@@ -42,8 +42,8 @@ export default function Home() {
   };
 
   const filteredDrivers = drivers.filter(driver =>
-    driver.nama.toLowerCase().includes(search.toLowerCase()) ||
-    driver.kategori.toLowerCase().includes(search.toLowerCase())
+    (driver.nama?.toLowerCase() || '').includes(search.toLowerCase()) ||
+    (driver.kategori?.toLowerCase() || '').includes(search.toLowerCase())
   );
 
   return (
