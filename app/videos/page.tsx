@@ -26,6 +26,7 @@ export default function VideosPage() {
         const { data, error } = await supabase
           .from('videos')
           .select('*')
+          .eq('is_hidden', false)
           .order('created_at', { ascending: false });
 
         if (error) {

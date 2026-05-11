@@ -12,6 +12,7 @@ type Driver = {
   deskripsi?: string;
   link_gdrive: string;
   created_at?: string;
+  is_hidden?: boolean;
 };
 
 export default function Home() {
@@ -34,6 +35,7 @@ export default function Home() {
     const { data, error } = await supabase
       .from('drivers')
       .select('*')
+      .eq('is_hidden', false)
       .order('created_at', { ascending: false });
 
     if (error) console.error(error);

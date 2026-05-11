@@ -10,6 +10,7 @@ type Tutorial = {
   summary: string;
   image_url?: string | null;
   created_at?: string;
+  is_hidden?: boolean;
 };
 
 export default function TutorialsPage() {
@@ -32,6 +33,7 @@ export default function TutorialsPage() {
     const { data, error } = await supabase
       .from('tutorials')
       .select('*')
+      .eq('is_hidden', false)
       .order('created_at', { ascending: false });
 
     if (error) {

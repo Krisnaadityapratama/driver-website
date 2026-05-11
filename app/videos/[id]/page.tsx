@@ -25,6 +25,7 @@ export default async function VideoPage({ params }: VideoPageProps) {
     .from('videos')
     .select('*')
     .eq('id', id)
+    .eq('is_hidden', false)
     .single();
 
   if (error || !video) {

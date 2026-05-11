@@ -12,6 +12,7 @@ type Tutorial = {
   content: string;
   image_url?: string | null;
   created_at?: string;
+  is_hidden?: boolean;
 };
 
 export default function TutorialDetailPage() {
@@ -34,6 +35,7 @@ export default function TutorialDetailPage() {
         .from('tutorials')
         .select('*')
         .eq('id', id)
+        .eq('is_hidden', false)
         .single();
 
       if (error) {
