@@ -54,9 +54,9 @@ export default function Home() {
         <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/80 p-8 shadow-2xl shadow-slate-950/30 backdrop-blur-xl sm:p-10">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl space-y-4">
-              <p className="text-sm uppercase tracking-[0.3em] text-sky-300/70">Gudang Driver dan Software Center</p>
-              <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">Driver & Software Barcode Terlengkap</h1>
-              <p className="text-slate-400 sm:text-lg">Temukan driver dan software yang Anda butuhkan dengan mudah. Semua file tersusun rapih dan siap diunduh.</p>
+              <p className="text-sm uppercase tracking-[0.3em] text-sky-300/70">POSNusa by VELNEXA</p>
+              <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">Driver, Software, Training & Tutorial</h1>
+              <p className="text-slate-400 sm:text-lg">Temukan driver dan software yang Anda butuhkan dengan mudah</p>
             </div>
             <div className="rounded-[1.75rem] border border-slate-800 bg-slate-950/80 px-5 py-4 text-slate-300 shadow-sm shadow-slate-950/10">
               <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Total Driver & Software</p>
