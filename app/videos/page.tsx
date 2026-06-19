@@ -1,134 +1,119 @@
 'use client';
-
-import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ArrowLeft, Search } from 'lucide-react';
-import { useState, useMemo, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import PageLayout from '@/components/PageLayout';
+
+type Video = {
+  id: string;
+  title: string;
+  description: string;
+  thumbnail_url?: string | null;
+  video_url?: string;
+  duration?: string;
+  created_at?: string;
+  is_hidden?: boolean;
+};
 
 export default function VideosPage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [videos, setVideos] = useState<any[]>([]);
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  // Fetch videos on component mount
   useEffect(() => {
-    const fetchVideos = async () => {
-      if (!supabase) {
-        setError('Supabase client tidak tersedia.');
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const { data, error } = await supabase
-          .from('videos')
-          .select('*')
-          .eq('is_hidden', false)
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          console.error(error);
-          setError('Gagal memuat video tutorial.');
-        } else {
-          setVideos(data || []);
-        }
-      } catch (err) {
-        console.error(err);
-        setError('Terjadi kesalahan saat memuat data.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchVideos();
   }, []);
 
-  // Filter videos based on search query
+  const fetchVideos = async () => {
+    if (!supabase) {
+      setVideos([]);
+      setLoading(false);
+      return;
+    }
+    const { data, error } = await supabase
+      .from('videos')
+      .select('*')
+      .eq('is_hidden', false)
+      .order('created_at', { ascending: false });
+
+    if (error) console.error(error);
+    else setVideos(data || []);
+    setLoading(false);
+  };
+
   const filteredVideos = useMemo(() => {
-    if (!searchQuery.trim()) return videos;
-
-    const query = searchQuery.toLowerCase();
-    return videos.filter(video =>
-      video.title.toLowerCase().includes(query) ||
-      video.description.toLowerCase().includes(query)
+    return videos.filter(v =>
+      v.title.toLowerCase().includes(search.toLowerCase()) ||
+      v.description.toLowerCase().includes(search.toLowerCase())
     );
-  }, [videos, searchQuery]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#020617] text-slate-100 flex items-center justify-center">
-        <p className="text-slate-400">Memuat video tutorial...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-[#020617] text-slate-100 flex items-center justify-center">
-        <p className="text-slate-400">{error}</p>
-      </div>
-    );
-  }
+  }, [videos, search]);
 
   return (
-    <div className="min-h-screen bg-[#020617] text-slate-100 pb-12">
-      <div className="mx-auto max-w-7xl px-6 pt-10 sm:px-8">
-        <div className="mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-300 mb-6">
-            <ArrowLeft className="w-4 h-4" />
-            Kembali ke Beranda
-          </Link>
-          <h1 className="text-4xl font-semibold tracking-tight text-white mb-4">Video Tutorial</h1>
-          <p className="text-xl text-slate-400 max-w-3xl mb-6">
-            Panduan visual lengkap untuk install driver dan tips lainnya. Temukan video tutorial yang sesuai dengan kebutuhan Anda.
-          </p>
+    <PageLayout
+      badge="Video Tutorial"
+      title={<>Tonton & Praktekan <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">Langsung</span></>}
+      description="Panduan visual step-by-step untuk install driver dan software. Mudah diikuti untuk pemula."
+      searchPlaceholder="Cari judul atau deskripsi video..."
+      searchValue={search}
+      onSearchChange={setSearch}
+      totalLabel="Video Tersedia"
+      totalValue={videos.length}
+      loading={loading}
+      loadingText="Memuat video tutorial..."
+      emptyTitle="Video tidak ditemukan"
+      emptyDescription="Coba ubah kata kunci pencarian atau kembali lagi nanti untuk video terbaru."
+    >
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+        {filteredVideos.map((video, i) => (
+          <Link
+            key={video.id}
+            href={`/videos/${video.id}`}
+            className="group relative animate-fade-up overflow-hidden rounded-2xl border border-white/10 bg-slate-900/40 backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-emerald-400/40 hover:shadow-xl hover:shadow-emerald-500/10"
+            style={{ animationDelay: `${(i % 9) * 50}ms` }}
+          >
+            <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-cyan-500/20">
+              {video.thumbnail_url ? (
+                <img src={video.thumbnail_url} alt={video.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+              ) : (
+                <div className="flex h-full items-center justify-center text-6xl transition-transform duration-500 group-hover:scale-110">🎬</div>
+              )}
 
-          {/* Search Input */}
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-            <Input
-              type="text"
-              placeholder="Cari video tutorial..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-slate-900 border-slate-700 text-white placeholder:text-slate-400 focus:border-sky-400"
-            />
-          </div>
-        </div>
-
-        {filteredVideos.length > 0 ? (
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {filteredVideos.map((video) => (
-              <div key={video.id} className="rounded-[1.75rem] border border-slate-800 bg-slate-950/90 p-6 shadow-sm shadow-slate-950/10 transition duration-300 hover:-translate-y-1 hover:border-slate-700 hover:shadow-md">
-                <div className="space-y-4">
-                  <div>
-                    <h2 className="text-xl font-semibold text-white mb-2">{video.title}</h2>
-                    <p className="text-slate-400 line-clamp-3">{video.description}</p>
-                  </div>
-                  <Link href={`/videos/${video.id}`}>
-                    <Button className="w-full bg-sky-600 text-white hover:bg-sky-700">
-                      Tonton Video
-                    </Button>
-                  </Link>
+              {/* Play button overlay */}
+              <div className="absolute inset-0 flex items-center justify-center bg-slate-950/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/10 backdrop-blur-md transition-transform group-hover:scale-110">
+                  <svg className="h-8 w-8 translate-x-0.5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
                 </div>
               </div>
-            ))}
-          </div>
-        ) : searchQuery.trim() ? (
-          <div className="text-center py-16">
-            <p className="text-slate-400 text-lg">Tidak ada video yang cocok dengan pencarian "{searchQuery}".</p>
-            <p className="text-slate-500 mt-2">Coba kata kunci yang berbeda.</p>
-          </div>
-        ) : (
-          <div className="text-center py-16">
-            <p className="text-slate-400 text-lg">Belum ada video tutorial tersedia.</p>
-            <p className="text-slate-500 mt-2">Silakan kembali lagi nanti untuk panduan video terbaru.</p>
-          </div>
-        )}
+
+              {/* Duration badge */}
+              {video.duration && (
+                <div className="absolute bottom-3 right-3 rounded-md bg-slate-950/90 px-2 py-1 text-xs font-mono text-white backdrop-blur">
+                  {video.duration}
+                </div>
+              )}
+            </div>
+
+            <div className="relative space-y-2 p-5">
+              <h2 className="text-lg font-semibold text-white transition-colors group-hover:text-emerald-300 line-clamp-2">
+                {video.title}
+              </h2>
+              <p className="text-sm text-slate-400 line-clamp-2">{video.description}</p>
+
+              <div className="flex items-center justify-between pt-2 text-xs text-slate-500">
+                <span>📅 {video.created_at ? new Date(video.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : 'Baru'}</span>
+                <span className="inline-flex items-center gap-1 font-semibold text-emerald-300 transition-all group-hover:gap-2">
+                  Tonton
+                  <svg className="h-3 w-3 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
-    </div>
+    </PageLayout>
   );
 }
